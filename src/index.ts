@@ -10,6 +10,10 @@ interface Vehicle {
     color: string;
     year: number;
     power: number;
+    bodyType?: string; 
+    wheelCount?: number; 
+    draft?: number; 
+    wingspan?: number;
 }
 
 interface Car extends Vehicle {
@@ -25,7 +29,9 @@ interface Plane extends Vehicle {
     wingspan: number;
 }
 
-const vehicles: Vehicle[] = [];
+type VehicleUnion = Vehicle | Car | Boat | Plane;
+
+const vehicles: VehicleUnion[] = [];
 
 app.get('/hello', (_req: Request, res: Response) => {
     res.send('Hello world');
@@ -57,8 +63,24 @@ app.get('/vehicle/search/:model', (req: Request, res: Response) => {
 
     if(matchingVehicle){
         const { model, color, year, power } = matchingVehicle;
-        const responseVehicle: Vehicle = { model, color, year, power };
+
+        let responseVehicle: Vehicle;
+
+        if('bodyType' in matchingVehicle){
+            const { bodyType, wheelCount } = matchingVehicle as Car;
+            responseVehicle = { model, color, year, power, bodyType, wheelCount };
+        } else if ('draft' in matchingVehicle){
+            const { draft } = matchingVehicle as Boat;
+            responseVehicle = { model, color, year, power, draft };
+        } else if ('wingspan' in matchingVehicle){
+            const { wingspan } = matchingVehicle as Plane;
+            responseVehicle = { model, color, year, power, wingspan };
+        } else {
+            responseVehicle = { model, color, year, power};
+        }
+
         res.json(responseVehicle);
+
     } else {
         res.status(404).json({ error: 'Vehicle not found.' });
     }
