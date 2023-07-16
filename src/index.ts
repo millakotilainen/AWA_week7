@@ -47,7 +47,7 @@ app.post('/vehicle/add', (req: Request, res: Response) =>{
 
     vehicles.push(newVehicle);
 
-    res.status(201).json({message: 'Vehicle added', vehicle: newVehicle})
+    res.status(201).send('Vehicle added');
 });
 
 app.get('/vehicle/search/:model', (req: Request, res: Response) => {
