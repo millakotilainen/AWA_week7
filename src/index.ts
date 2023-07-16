@@ -42,7 +42,7 @@ app.post('/vehicle/add', (req: Request, res: Response) =>{
     } else if (wingspan){
         newVehicle = { model, color, year, power, wingspan } as Plane;
     } else {
-        return res.status(400).json({ error: 'Invalid vehicle type' });
+        newVehicle = { model, color, year, power };
     }
 
     vehicles.push(newVehicle);
